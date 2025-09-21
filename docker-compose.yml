@@ -17,6 +17,20 @@ services:
       MYSQL_PASSWORD: example
       MYSQL_DATABASE: example_db
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-container
+    environment:
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: example
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+
+
+
   # MariaDB Service
   db:
     image: mariadb:latest

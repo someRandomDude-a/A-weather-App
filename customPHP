@@ -1,11 +1,8 @@
 # Use the base php:8.3-apache image
 FROM php:8.3-apache
 
-# Install the necessary PHP extensions (pdo, pdo_mysql)
 RUN docker-php-ext-install pdo pdo_mysql
 
-# Set the working directory (optional, but good practice)
 WORKDIR /var/www/html
 
-# Copy the contents of the current directory into the container
 COPY . /var/www/html/

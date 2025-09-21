@@ -32,7 +32,7 @@ void setup() {
 
   HTTPClient http;
 
-  http.begin(HOST_NAME + PATH_NAME);
+  http.begin(HOST_NAME);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
   int httpCode = http.POST(queryString);

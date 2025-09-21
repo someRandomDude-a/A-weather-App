@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Data POST Request</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            display: block; /* Forces the buttons to be stacked */
+            width: 100%; /* Full width */
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom: 10px; /* Adds space between the buttons */
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #e7f4e7;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Send Weather Data</h2>
+        <div class="form-group">
+            <label for="url">API URL:</label>
+            <input type="text" id="url" placeholder="Enter API URL" required value="http://localhost:8080/api.php">
+        </div>
+        <div class="form-group">
+            <label for="device_token">Device Token:</label>
+            <input type="text" id="device_token" placeholder="Enter Device Token" required value="abcd">
+        </div>
+        <div class="form-group">
+            <label for="temperature">Temperature (°C):</label>
+            <input type="text" id="temperature" placeholder="Enter Temperature" required>
+        </div>
+        <div class="form-group">
+            <label for="humidity">Humidity (%):</label>
+            <input type="text" id="humidity" placeholder="Enter Humidity" required>
+        </div>
+        <div class="form-group">
+            <label for="datetime">Date and Time:</label>
+            <input type="text" id="datetime" placeholder="Enter Date and Time (YYYY-MM-DD HH:MM:SS)" value="2025-09-21 07:50:00" required>
+        </div>
+        <button id="sendRequest">Send POST Request</button>
+
+        <!-- Button to open localhost:8081 -->
+        <button id="openLocalhostButton">Open PHP myadmin<br>To view Database</button>
+
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById("sendRequest").addEventListener("click", function() {
+            // Get values from the input fields
+            const url = document.getElementById("url").value;
+            const deviceToken = document.getElementById("device_token").value;
+            const temperature = document.getElementById("temperature").value;
+            const humidity = document.getElementById("humidity").value;
+            const datetime = document.getElementById("datetime").value;
+
+            // Validate inputs
+            if (!url || !deviceToken || !temperature || !humidity || !datetime) {
+                alert("All fields must be filled out!");
+                return;
+            }
+
+            // Prepare the data to send
+            const data = {
+                device_token: deviceToken,
+                temperature: parseFloat(temperature),
+                humidity: parseFloat(humidity),
+                datetime: datetime
+            };
+
+            // Send POST request using fetch API
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseDiv = document.getElementById("response");
+                responseDiv.style.display = 'block';
+                responseDiv.classList.remove('error');
+                responseDiv.innerHTML = '<strong>Success:</strong> ' + JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                const responseDiv = document.getElementById("response");
+                responseDiv.style.display = 'block';
+                responseDiv.classList.add('error');
+                responseDiv.innerHTML = '<strong>Error:</strong> ' + error.message;
+            });
+        });
+
+        // Open localhost:8081 in a new tab when the button is clicked
+        document.getElementById("openLocalhostButton").addEventListener("click", function() {
+            window.open('http://localhost:8081/index.php?route=/sql&pos=0&db=example_db&table=device_data', '_blank');
+        });
+    </script>
+</body>
+</html>
