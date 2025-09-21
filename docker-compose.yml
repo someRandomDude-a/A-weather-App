@@ -1,7 +1,9 @@
 services:
   # PHP Service
   php:
-    build: .customPHP
+    build: 
+      context: .
+      dockerfile: customPHP
     container_name: php-container
     ports:
       - "8080:80"
